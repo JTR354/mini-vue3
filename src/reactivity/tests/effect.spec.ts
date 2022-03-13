@@ -27,4 +27,32 @@ describe('effect', () => {
     expect(foo).toBe(12)
     expect(r).toBe('foo')
   });
+
+  it('scheduler', () => {
+    /**
+     * 1. effect函数接收二个可选参数 scheduler
+     * 2. 第一次执行时不会触发scheduler但会触发fn
+     * 3. 在set阶段只触发scheduler
+     */
+    let dummy
+    let run:any
+    const scheduler = jest.fn(() => {
+      run = runner
+    })
+    const obj = reactive({foo:1})
+    const runner = effect(() => {
+      dummy = obj.foo
+    }, {scheduler})
+    expect(scheduler).not.toHaveBeenCalled()
+    expect(dummy).toBe(1)
+    // should be called on first trigger
+    obj.foo++
+    expect(scheduler).toHaveBeenCalledTimes(1)
+    // // should not run yet
+    expect(dummy).toBe(1)
+    // // manually run
+    run()
+    // // should have run
+    expect(dummy).toBe(2)
+  });
  })

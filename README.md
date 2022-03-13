@@ -6,7 +6,7 @@
 
 - [x] 6-effect & reactive & 依赖收集 & 触发依赖
 - [x] 7-effect返回runner
-- [ ] 8-effect的scheduler功能
+- [x] 8-effect的scheduler功能
 - [ ] 9-effect的stop功能
 - [ ] 10-readonly功能
 - [ ] 11-isReactive 和 isReadonly
