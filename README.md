@@ -8,7 +8,7 @@
 - [x] 7-effect返回runner
 - [x] 8-effect的scheduler功能
 - [x] 9-effect的stop功能
-- [ ] 10-readonly功能
+- [x] 10-readonly功能
 - [ ] 11-isReactive 和 isReadonly
 - [ ] 12-优化stop功能
 - [ ] 13-实现reactive 和 readonly嵌套对象
