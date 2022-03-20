@@ -10,7 +10,7 @@
 - [x] 9-effect的stop功能
 - [x] 10-readonly功能
 - [x] 11-isReactive 和 isReadonly
-- [ ] 12-优化stop功能
+- [x] 12-优化stop功能
 - [ ] 13-实现reactive 和 readonly嵌套对象
 - [ ] 14-实现shallowReadonly功能
 - [ ] 15-实现isProxy功能

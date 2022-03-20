@@ -3,7 +3,7 @@ import { extend } from './../shared/index';
 // TODO 为啥用全局? targetMap & activeEffect
 const targetMap = new Map();
 let activeEffect;
-let shouldTrack = true
+let shouldTrack = false
 class ReactiveEffect {
   private _fn: () => {};
   deps = [];
@@ -13,12 +13,23 @@ class ReactiveEffect {
     this._fn = fn;
   }
   run() {
+    /**
+     * 依赖只会收集一次
+     */
+    if (!this.active) {
+      return this._fn()
+    }
     shouldTrack = true
     activeEffect = this;
-    return this._fn();
+
+    const result = this._fn();
+
+    // reset
+    shouldTrack = false
+    activeEffect = undefined
+    return result
   }
   stop() {
-    shouldTrack = false
     if (this.active) {
       cleanupEffect(this);
       this.onStop && this.onStop();
@@ -31,6 +42,7 @@ function cleanupEffect(effect) {
   effect.deps.forEach((dep: any) => {
     dep.delete(effect);
   });
+  effect.deps.length = 0;
 }
 
 export const track = (target, key) => {
@@ -50,6 +62,8 @@ export const track = (target, key) => {
     desMap.set(key, dep);
   }
   
+  if (dep.has(activeEffect)) return
+
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 };
@@ -59,9 +73,11 @@ function isTracking() {
 }
 
 export const trigger = (target, key) => {
-  const desMap = targetMap.get(target);
-  if (!desMap) return
-  const dep = desMap.get(key);
+  const depsMap = targetMap.get(target);
+
+  if (!depsMap) return;
+
+  const dep = depsMap.get(key);
   for (let effect of dep) {
     if (effect.scheduler) {
       effect.scheduler();

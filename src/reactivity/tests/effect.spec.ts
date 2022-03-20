@@ -64,6 +64,11 @@ describe('effect', () => {
     })
     obj.prop = 2
     expect(dummy).toBe(2)
+    /**
+     * stop 只是stop了effect
+     * 当runner再次执行时，会触发effect -> fn
+     * reactive创建出来的obj不会阻止
+     */
     stop(runner)
     // obj.prop = 3
     // obj.prop = obj.prop + 1

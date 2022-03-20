@@ -29,6 +29,7 @@ export const reactiveHandler = { get, set };
 export const readonlyHandler = {
   get: readonlyGet,
   set() {
+    console.warn(`can't set value which is readonly`)
     return true;
   },
 };
