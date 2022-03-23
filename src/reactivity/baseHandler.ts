@@ -1,10 +1,10 @@
 import { reactive, ReactiveFlags, readonly } from "./reactive";
 import { track, trigger } from "./effect";
-import { isObject } from "../shared";
+import { extend, isObject } from "../shared";
 
 const createGetter =
-  (isReadOnly = false) =>
-  (target, key) => {
+  (isReadOnly = false, isShallow = false) =>
+  (target: object, key: string | number | symbol) => {
     if (key === ReactiveFlags.IS_REACTIVE) {
       return !isReadOnly;
     } else if (key === ReactiveFlags.IS_READONLY) {
@@ -12,6 +12,10 @@ const createGetter =
     }
     // TODO 为啥要用Reflect???
     const res = Reflect.get(target, key);
+
+    if (isShallow) {
+      return res;
+    }
 
     if (isObject(res)) {
       return isReadOnly ? readonly(res) : reactive(res);
@@ -30,6 +34,7 @@ const createSetter = () => (target, key, value) => {
 const get = createGetter();
 const set = createSetter();
 const readonlyGet = createGetter(true);
+const shallowReadonlyGet = createGetter(true, true);
 
 export const reactiveHandler = { get, set };
 export const readonlyHandler = {
@@ -39,3 +44,6 @@ export const readonlyHandler = {
     return true;
   },
 };
+export const shallowReadonlyHandler = extend({}, readonlyHandler, {
+  get: shallowReadonlyGet,
+});
