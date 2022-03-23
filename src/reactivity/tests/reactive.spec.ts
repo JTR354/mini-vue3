@@ -1,3 +1,5 @@
+import { it, describe, expect } from "vitest";
+
 import { isReactive, reactive } from "../reactive";
 
 describe('reactive', () => {
