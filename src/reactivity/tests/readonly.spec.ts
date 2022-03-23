@@ -1,6 +1,6 @@
 import { describe, expect, vi, test, it } from "vitest";
 
-import { isReadonly, readonly } from "../reactive";
+import { isProxy, isReadonly, readonly } from "../reactive";
 
 describe("readonly", () => {
   test("happy path", () => {
@@ -15,6 +15,8 @@ describe("readonly", () => {
     // isReadonly
     expect(isReadonly(wrapped)).toBe(true);
     expect(isReadonly(original)).toBe(false);
+    // isProxy is reactive or readonly
+    expect(isProxy(wrapped)).toBe(true);
   });
 
   it("nested readonly", () => {

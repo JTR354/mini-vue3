@@ -1,6 +1,6 @@
 import { it, describe, expect } from "vitest";
 
-import { isReactive, reactive } from "../reactive";
+import { isProxy, isReactive, reactive } from "../reactive";
 
 describe("reactive", () => {
   it("happy path", () => {
@@ -13,6 +13,8 @@ describe("reactive", () => {
     // isReactive
     expect(isReactive(observed)).toBe(true);
     expect(isReactive(original)).toBe(false);
+    // isProxy is reactive or readonly
+    expect(isProxy(observed)).toBe(true);
   });
 
   it("nested reactive", () => {
