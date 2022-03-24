@@ -16,7 +16,7 @@
 - [x] 15-实现isProxy功能
 - [x] 16-实现ref功能
 - [x] 17-实现isRef 和 unRef功能
-- [ ] 18-实现proxyRefs功能
+- [x] 18-实现proxyRefs功能
 - [ ] 19-实现computed计算属性
 - [ ] 20-实现初始化component主流程
 - [ ] 21-使用rollup打包库
