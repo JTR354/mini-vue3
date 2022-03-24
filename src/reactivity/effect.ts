@@ -4,7 +4,7 @@ import { extend } from "./../shared/index";
 const targetMap = new Map();
 let activeEffect;
 let shouldTrack = false;
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: () => {};
   deps = [];
   active = true;
