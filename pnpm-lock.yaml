@@ -8,7 +8,7 @@ specifiers:
   babel-jest: ^27.5.1
   jest: ^27.5.1
   typescript: ^4.6.2
-  vitest: ^0.7.8
+  vitest: ^0.7.10
 
 devDependencies:
   '@babel/core': 7.17.5
@@ -18,7 +18,7 @@ devDependencies:
   babel-jest: 27.5.1_@babel+core@7.17.5
   jest: 27.5.1
   typescript: 4.6.2
-  vitest: 0.7.8
+  vitest: 0.7.10
 
 packages:
 
@@ -3877,9 +3877,9 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.7.8:
-    resolution: {integrity: sha512-Zw13DMFqe5SEJmqoSMvJgUHmy2YHxpwKJYQgzp+n0/AXH10eQ02j6EVhyHBOhVQl36CxqQFP6UDpocgLVsopzA==}
-    engines: {node: '>=v14.19.0'}
+  /vitest/0.7.10:
+    resolution: {integrity: sha512-We5a7cnY2aUpX4tAO+w2KRhJiJ4FznfWjYKkqWoAqs4x4pKgyRsMJNZ7OSY/lFHOoRz3yv0mgwfVlZiRc0/mmA==}
+    engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
       '@vitest/ui': '*'

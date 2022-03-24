@@ -1,15 +1,15 @@
-import { extend } from './../shared/index';
+import { extend } from "./../shared/index";
 
 // TODO 为啥用全局? targetMap & activeEffect
 const targetMap = new Map();
 let activeEffect;
-let shouldTrack = false
+let shouldTrack = false;
 class ReactiveEffect {
   private _fn: () => {};
   deps = [];
   active = true;
   onStop?: () => void;
-  constructor(fn, public scheduler?) {
+  constructor(fn: () => {}, public scheduler?: any) {
     this._fn = fn;
   }
   run() {
@@ -17,17 +17,17 @@ class ReactiveEffect {
      * 依赖只会收集一次
      */
     if (!this.active) {
-      return this._fn()
+      return this._fn();
     }
-    shouldTrack = true
+    shouldTrack = true;
     activeEffect = this;
 
     const result = this._fn();
 
     // reset
-    shouldTrack = false
-    activeEffect = undefined
-    return result
+    shouldTrack = false;
+    activeEffect = undefined;
+    return result;
   }
   stop() {
     if (this.active) {
@@ -48,7 +48,7 @@ function cleanupEffect(effect) {
 export const track = (target, key) => {
   // if (!activeEffect) return;
   // if (!shouldTrack) return;
-  if (!isTracking()) return
+  if (!isTracking()) return;
   // target -> key -> dep
   let desMap = targetMap.get(target);
   if (!desMap) {
@@ -61,15 +61,19 @@ export const track = (target, key) => {
     dep = new Set();
     desMap.set(key, dep);
   }
-  
-  if (dep.has(activeEffect)) return
+
+  trackEffect(dep);
+};
+
+export function trackEffect(dep) {
+  if (dep.has(activeEffect)) return;
 
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
-};
+}
 
-function isTracking() {
-  return shouldTrack && activeEffect !== undefined
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
 }
 
 export const trigger = (target, key) => {
@@ -87,10 +91,20 @@ export const trigger = (target, key) => {
   }
 };
 
+export function triggerEffect(dep) {
+  for (let effect of dep) {
+    if (effect.scheduler) {
+      effect.scheduler();
+    } else {
+      effect.run();
+    }
+  }
+}
+
 export const effect = (fn, options: any = {}) => {
   const _effect = new ReactiveEffect(fn, options.scheduler);
   _effect.run();
-  extend(_effect, options)
+  extend(_effect, options);
   const runner: any = _effect.run.bind(_effect);
   runner.effect = _effect;
   return runner;
