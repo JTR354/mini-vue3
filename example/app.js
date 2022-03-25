@@ -1,8 +1,11 @@
-import { h } from "./mini-vue.esm.js";
+import { h } from "../lib/mini-vue.esm.js";
 const App = {
   render() {
-    console.log(this.msg);
-    return h("div", { id: "root", class: ["red", "blue"] }, "min-vue");
+    return h(
+      "div",
+      { id: "root", class: ["red", "blue"] },
+      "mini-vue" + this.msg
+    );
   },
   setup() {
     return {

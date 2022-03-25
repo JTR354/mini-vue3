@@ -13,11 +13,17 @@ function createVNode(type, props, children) {
 export const createApp = (rootComponent) => {
   return {
     mount(container) {
-      const { type, props, children } = rootComponent;
+      const context = rootComponent.setup();
+      const vnode = rootComponent.render.call(context);
+      const { type, props, children } = vnode;
       const el: HTMLElement = document.createElement(type);
       el.textContent = children;
-      for (let key of props) {
-        el.setAttribute(key, props[key]);
+      for (let key in props) {
+        let value = props[key];
+        if (Array.isArray(value)) {
+          value = value.join(" ");
+        }
+        el.setAttribute(key, value);
       }
       const root: HTMLElement = document.querySelector(container);
       root.append(el);
