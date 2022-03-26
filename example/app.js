@@ -1,4 +1,5 @@
 import { h } from "../lib/mini-vue.esm.js";
+import { Foo } from "./foo.js";
 window.self = null;
 const App = {
   render() {
@@ -15,10 +16,11 @@ const App = {
           console.log("mouse down");
         },
       },
-      [
-        h("p", {}, "hello world " + this.msg),
-        h("p", { class: "black" }, "this is a child component"),
-      ]
+      [h("p", {}, "hello world " + this.msg), h(Foo, { count: 10 })]
+      // [
+      //   h("p", {}, "hello world " + this.msg),
+      //   h("p", { class: "black" }, "this is a child component"),
+      // ]
     );
   },
   setup() {
