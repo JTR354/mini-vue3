@@ -18,9 +18,9 @@
 - [x] 17-实现isRef 和 unRef功能
 - [x] 18-实现proxyRefs功能
 - [x] 19-实现computed计算属性
-- [ ] 20-实现初始化component主流程
+- [x] 20-实现初始化component主流程
 - [x] 21-使用rollup打包库
-- [ ] 22-实现初始化element主流程
+- [x] 22-实现初始化element主流程
 - [ ] 23-实现组件化代理对象
 - [ ] 24-实现shapeFlags
 - [ ] 25-实现注册事件功能
