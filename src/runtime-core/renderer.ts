@@ -1,4 +1,5 @@
-import { isObject } from "./../shared/index";
+import { ShapeFlags } from "./../shared/ShapeFlags";
+
 import { createComponentInstance, setupComponent } from "./component";
 
 export function render(vnode, container) {
@@ -7,9 +8,10 @@ export function render(vnode, container) {
 }
 
 function path(vnode, container) {
-  if (isObject(vnode.type)) {
+  const { shapeFlag } = vnode;
+  if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     processComponent(vnode, container);
-  } else if (typeof vnode.type === "string") {
+  } else if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, container);
   }
 }
@@ -33,19 +35,21 @@ function mountElement(vnode, container: HTMLHtmlElement) {
     }
     el.setAttribute(key, value);
   }
-  mountChildren(children, el);
+  mountChildren(children, el, vnode);
   container.append(el);
 }
 
-function mountChildren(children: any, el: HTMLHtmlElement) {
-  if (typeof children === "string") {
+function mountChildren(children: any, el: HTMLHtmlElement, vnode) {
+  const { shapeFlag } = vnode;
+  if (ShapeFlags.TEXT_CHILDREN & shapeFlag) {
     el.textContent = children;
-  } else if (Array.isArray(children)) {
+  } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlag) {
+    // TODO child is a string
     children.forEach((child) => {
-      mountChildren(child, el);
+      path(child, el);
+      // mountChildren(child, el, vnode);
     });
-  } else if (isObject(children)) {
-    path(children, el);
+  } else if (ShapeFlags.STATEFUL_CHILDREN & shapeFlag) {
   }
 }
 

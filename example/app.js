@@ -4,7 +4,7 @@ const App = {
   render() {
     window.self = this;
     return h("div", { id: "root", class: ["red", "blue"] }, [
-      "hello world " + this.msg,
+      h("p", {}, "hello world " + this.msg),
       h("p", { class: "black" }, "this is a child component"),
     ]);
   },
