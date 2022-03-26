@@ -3,10 +3,23 @@ window.self = null;
 const App = {
   render() {
     window.self = this;
-    return h("div", { id: "root", class: ["red", "blue"] }, [
-      h("p", {}, "hello world " + this.msg),
-      h("p", { class: "black" }, "this is a child component"),
-    ]);
+    return h(
+      "div",
+      {
+        id: "root",
+        class: ["red", "blue"],
+        onClick() {
+          console.log("click");
+        },
+        onMousedown() {
+          console.log("mouse down");
+        },
+      },
+      [
+        h("p", {}, "hello world " + this.msg),
+        h("p", { class: "black" }, "this is a child component"),
+      ]
+    );
   },
   setup() {
     return {

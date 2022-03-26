@@ -28,12 +28,18 @@ function mountElement(vnode, container: HTMLHtmlElement) {
   const { type, props, children } = vnode;
   const el: HTMLHtmlElement = (vnode.el = document.createElement(type));
 
+  const isOn = (key) => /^on[A-Z]/.test(key);
   for (const key in props) {
     let value = props[key];
     if (key === "class" && Array.isArray(value)) {
       value = value.join(" ");
     }
-    el.setAttribute(key, value);
+    if (isOn(key)) {
+      const event = key.slice(2).toLocaleLowerCase();
+      el.addEventListener(event, value);
+    } else {
+      el.setAttribute(key, value);
+    }
   }
   mountChildren(children, el, vnode);
   container.append(el);
