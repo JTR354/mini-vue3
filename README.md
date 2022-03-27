@@ -25,7 +25,7 @@
 - [x] 24-实现shapeFlags
 - [x] 25-实现注册事件功能
 - [x] 26-实现props功能
-- [ ] 27-实现组件emit功能
+- [x] 27-实现组件emit功能
 - [ ] 28-实现组件slots功能
 - [ ] 29-实现Fragment和Text类型节点
 - [ ] 30-实现getCurrentInstance
