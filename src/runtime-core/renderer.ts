@@ -55,7 +55,6 @@ function mountChildren(children: any, el: HTMLHtmlElement, vnode) {
       path(child, el);
       // mountChildren(child, el, vnode);
     });
-  } else if (ShapeFlags.STATEFUL_CHILDREN & shapeFlag) {
   }
 }
 

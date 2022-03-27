@@ -33,3 +33,4 @@
 
 export * from "./creatApp";
 export * from "./h";
+export { renderSlots } from "./helpers/renderSlots";
