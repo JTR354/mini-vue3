@@ -1,6 +1,7 @@
 import { ShapeFlags } from "./../shared/ShapeFlags";
 
 import { createComponentInstance, setupComponent } from "./component";
+import { Fragment, Text } from "./vnode";
 
 export function render(vnode, container) {
   // path
@@ -8,12 +9,32 @@ export function render(vnode, container) {
 }
 
 function path(vnode, container) {
-  const { shapeFlag } = vnode;
-  if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    processComponent(vnode, container);
-  } else if (shapeFlag & ShapeFlags.ELEMENT) {
-    processElement(vnode, container);
+  const { shapeFlag, type } = vnode;
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, container);
+      break;
+    case Text:
+      processText(vnode, container);
+      break;
+
+    default:
+      if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        processComponent(vnode, container);
+      } else if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(vnode, container);
+      }
+      break;
   }
+}
+
+function processText(vnode: any, container: HTMLElement) {
+  const textNode = (vnode.el = document.createTextNode(vnode.children));
+  container.append(textNode);
+}
+
+function processFragment(vnode: any, container: any) {
+  mountChildren(vnode, container);
 }
 
 function processElement(vnode, container) {
@@ -25,7 +46,7 @@ function processElement(vnode, container) {
 }
 
 function mountElement(vnode, container: HTMLHtmlElement) {
-  const { type, props, children } = vnode;
+  const { type, props, shapeFlag } = vnode;
   const el: HTMLHtmlElement = (vnode.el = document.createElement(type));
 
   const isOn = (key) => /^on[A-Z]/.test(key);
@@ -41,21 +62,18 @@ function mountElement(vnode, container: HTMLHtmlElement) {
       el.setAttribute(key, value);
     }
   }
-  mountChildren(children, el, vnode);
+  if (ShapeFlags.TEXT_CHILDREN & shapeFlag) {
+    el.textContent = vnode.children;
+  } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlag) {
+    mountChildren(vnode, el);
+  }
   container.append(el);
 }
 
-function mountChildren(children: any, el: HTMLHtmlElement, vnode) {
-  const { shapeFlag } = vnode;
-  if (ShapeFlags.TEXT_CHILDREN & shapeFlag) {
-    el.textContent = children;
-  } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlag) {
-    // TODO child is a string
-    children.forEach((child) => {
-      path(child, el);
-      // mountChildren(child, el, vnode);
-    });
-  }
+function mountChildren(vnode, el) {
+  vnode.children.forEach((child) => {
+    path(child, el);
+  });
 }
 
 function processComponent(vnode, container) {
