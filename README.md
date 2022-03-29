@@ -28,7 +28,7 @@
 - [x] 27-实现组件emit功能
 - [x] 28-实现组件slots功能
 - [x] 29-实现Fragment和Text类型节点
-- [ ] 30-实现getCurrentInstance
+- [x] 30-实现getCurrentInstance
 - [ ] 31-实现provide-inject功能
 - [ ] 32-实现自定义渲染器
 - [ ] 33-更新element流程搭建
