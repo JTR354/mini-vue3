@@ -4,7 +4,9 @@ import { isObject } from "./../shared/index";
 import { initProps } from "./componentProps";
 import { emit } from "./componentEmit";
 import { initSlots } from "./componentSlots";
-export function createComponentInstance(vnode) {
+
+export function createComponentInstance(vnode, parent) {
+  console.log(parent);
   const component = {
     vnode,
     get type() {
@@ -14,6 +16,8 @@ export function createComponentInstance(vnode) {
     props: {},
     slots: {},
     emit: () => {},
+    provides: parent ? parent.provides : {},
+    parent,
   };
 
   component.emit = emit.bind(null, component) as any;
