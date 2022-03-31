@@ -30,7 +30,7 @@
 - [x] 29-实现Fragment和Text类型节点
 - [x] 30-实现getCurrentInstance
 - [x] 31-实现provide-inject功能
-- [ ] 32-实现自定义渲染器
+- [x] 32-实现自定义渲染器
 - [ ] 33-更新element流程搭建
 - [ ] 34-更新element的props
 - [ ] 35-更新element的children
