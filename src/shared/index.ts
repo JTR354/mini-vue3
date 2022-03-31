@@ -18,3 +18,5 @@ export const camelias = (str: string) =>
   str.replace(/-(\w)/g, (_, c: string) => (c ? c.toUpperCase() : ""));
 
 export const toHandlerKey = (event: string) => "on" + capitalize(event);
+
+export const isOn = (key) => /^on[A-Z]/.test(key);
