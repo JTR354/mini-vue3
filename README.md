@@ -32,7 +32,7 @@
 - [x] 31-实现provide-inject功能
 - [x] 32-实现自定义渲染器
 - [x] 33-更新element流程搭建
-- [ ] 34-更新element的props
+- [x] 34-更新element的props
 - [ ] 35-更新element的children
 - [ ] 36-更新element的children双端对比diff算法①
 - [ ] 37-更新element的children双端对比diff算法②

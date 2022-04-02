@@ -5,15 +5,19 @@ function createElement(type) {
   return document.createElement(type);
 }
 
-function pathProp(key, value, el) {
-  if (key === "class" && Array.isArray(value)) {
-    value = value.join(" ");
+function pathProp(el: HTMLElement, key, preValue, newValue) {
+  if (key === "class" && Array.isArray(newValue)) {
+    newValue = newValue.join(" ");
   }
   if (isOn(key)) {
     const event = key.slice(2).toLocaleLowerCase();
-    el.addEventListener(event, value);
+    el.addEventListener(event, newValue);
   } else {
-    el.setAttribute(key, value);
+    if (newValue == null) {
+      el.removeAttribute(key);
+    } else {
+      el.setAttribute(key, newValue);
+    }
   }
 }
 

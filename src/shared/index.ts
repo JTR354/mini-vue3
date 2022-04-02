@@ -20,3 +20,5 @@ export const camelias = (str: string) =>
 export const toHandlerKey = (event: string) => "on" + capitalize(event);
 
 export const isOn = (key) => /^on[A-Z]/.test(key);
+
+export const EMPTY_OBJ = {}

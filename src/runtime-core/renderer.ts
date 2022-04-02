@@ -1,3 +1,4 @@
+import { EMPTY_OBJ } from "../shared";
 import { effect } from "./../reactivity/effect";
 import { ShapeFlags } from "./../shared/ShapeFlags";
 
@@ -6,7 +7,12 @@ import { createAppAPI } from "./creatApp";
 import { Fragment, Text } from "./vnode";
 
 export function createRenderer(options) {
-  const { createElement, pathProp, insert, setElementText } = options;
+  const {
+    createElement: hostCreateElement,
+    pathProp: hostPathProp,
+    insert: hostInsert,
+    setElementText: hostSetElementText,
+  } = options;
 
   function render(n1, n2, container, parentComponent) {
     // path
@@ -59,12 +65,35 @@ export function createRenderer(options) {
     console.log("n1", n1);
     console.log("n2", n2);
     console.log(container);
+    const oldProps = n1.props || EMPTY_OBJ;
+    const newProps = n2.props || EMPTY_OBJ;
+    const el = (n2.el = n1.el);
+    pathProps(el, oldProps, newProps);
+  }
+
+  function pathProps(el, oldProps, newProps) {
+    if (oldProps !== newProps) {
+      for (let key in newProps) {
+        const prevProp = oldProps[key];
+        const nextProp = newProps[key];
+        if (prevProp !== newProps) {
+          hostPathProp(el, key, prevProp, nextProp);
+        }
+      }
+    }
+    if (oldProps !== EMPTY_OBJ) {
+      for (let key in oldProps) {
+        if (!newProps[key]) {
+          hostPathProp(el, key, oldProps[key], null);
+        }
+      }
+    }
   }
 
   function mountElement(vnode, container: HTMLHtmlElement, parentComponent) {
     const { type, props, shapeFlag } = vnode;
     // createElement
-    const el: HTMLHtmlElement = (vnode.el = createElement(type));
+    const el: HTMLHtmlElement = (vnode.el = hostCreateElement(type));
 
     for (const key in props) {
       let value = props[key];
@@ -77,16 +106,16 @@ export function createRenderer(options) {
       // } else {
       //   el.setAttribute(key, value);
       // }
-      pathProp(key, value, el);
+      hostPathProp(el, key, null, value);
     }
     if (ShapeFlags.TEXT_CHILDREN & shapeFlag) {
       // el.textContent = vnode.children;
-      setElementText(el, vnode.children);
+      hostSetElementText(el, vnode.children);
     } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlag) {
       mountChildren(vnode, el, parentComponent);
     }
     // container.append(el);
-    insert(el, container);
+    hostInsert(el, container);
   }
 
   function mountChildren(vnode, el, parentComponent) {
@@ -107,10 +136,11 @@ export function createRenderer(options) {
 
   function setupRenderEffect(instance, initialVNode, container) {
     effect(() => {
+      // TODO modify???
       if (!instance.isMounted) {
         console.log("init");
         const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
+        const subTree = (instance.subTree = instance.render.call(proxy));
         path(null, subTree, container, instance);
         // element -> mount
         initialVNode.el = subTree.el;
@@ -118,10 +148,9 @@ export function createRenderer(options) {
       } else {
         console.log("update");
         const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
-        const prevSubTree = instance.subTree;
-        instance.subTree = subTree;
-        path(prevSubTree, subTree, container, instance);
+        const prevTree = instance.subTree;
+        const nextTree = (instance.subTree = instance.render.call(proxy));
+        path(prevTree, nextTree, container, instance);
       }
     });
   }
