@@ -12,6 +12,7 @@ export function createRenderer(options) {
     pathProp: hostPathProp,
     insert: hostInsert,
     setElementText: hostSetElementText,
+    remove: hostRemove,
   } = options;
 
   function render(n1, n2, container, parentComponent) {
@@ -45,7 +46,7 @@ export function createRenderer(options) {
   }
 
   function processFragment(n1, n2: any, container: any, parentComponent) {
-    mountChildren(n2, container, parentComponent);
+    mountChildren(n2.children, container, parentComponent);
   }
 
   function processElement(n1, n2, container, parentComponent) {
@@ -56,19 +57,55 @@ export function createRenderer(options) {
     if (n1 === null) {
       mountElement(n2, container, parentComponent);
     } else {
-      pathElement(n1, n2, container);
+      pathElement(n1, n2, container, parentComponent);
     }
   }
 
-  function pathElement(n1, n2, container) {
+  function pathElement(n1, n2, container, parentComponent) {
     console.log("pathElement");
     console.log("n1", n1);
     console.log("n2", n2);
     console.log(container);
+
     const oldProps = n1.props || EMPTY_OBJ;
     const newProps = n2.props || EMPTY_OBJ;
     const el = (n2.el = n1.el);
+    pathChildren(n1, n2, el, parentComponent);
     pathProps(el, oldProps, newProps);
+  }
+
+  function pathChildren(n1, n2, container, parentComponent) {
+    const { shapeFlag: prevShapeFlag, children: c1 } = n1;
+    const { shapeFlag: nextShapeFlag, children: c2 } = n2;
+
+    // array -> text
+    // text -> text
+    // text -> array
+    // array -> array
+
+    // 以next vnode 为视角切入!
+    if (nextShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+        debugger;
+        unmountChildren(c1);
+      }
+      if (c1 !== c2) {
+        hostSetElementText(container, c2);
+      }
+    } else {
+      if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+        if (nextShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+          hostSetElementText(container, "");
+          mountChildren(c2, container, parentComponent);
+        }
+      }
+    }
+  }
+
+  function unmountChildren(children: any) {
+    for (let { el } of children) {
+      hostRemove(el);
+    }
   }
 
   function pathProps(el, oldProps, newProps) {
@@ -112,14 +149,14 @@ export function createRenderer(options) {
       // el.textContent = vnode.children;
       hostSetElementText(el, vnode.children);
     } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlag) {
-      mountChildren(vnode, el, parentComponent);
+      mountChildren(vnode.children, el, parentComponent);
     }
     // container.append(el);
     hostInsert(el, container);
   }
 
-  function mountChildren(vnode, el, parentComponent) {
-    vnode.children.forEach((v) => {
+  function mountChildren(children, el, parentComponent) {
+    children.forEach((v) => {
       path(null, v, el, parentComponent);
     });
   }

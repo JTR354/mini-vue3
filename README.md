@@ -33,7 +33,7 @@
 - [x] 32-实现自定义渲染器
 - [x] 33-更新element流程搭建
 - [x] 34-更新element的props
-- [ ] 35-更新element的children
+- [x] 35-更新element的children
 - [ ] 36-更新element的children双端对比diff算法①
 - [ ] 37-更新element的children双端对比diff算法②
 - [ ] 38-更新element的children双端对比diff算法③

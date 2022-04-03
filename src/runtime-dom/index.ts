@@ -29,11 +29,19 @@ function setElementText(el, text) {
   el.textContent = text;
 }
 
+function remove(child: HTMLElement) {
+  const parent = child.parentNode;
+  if (parent) {
+    parent.removeChild(child);
+  }
+}
+
 const options = {
   createElement,
   pathProp,
   insert,
   setElementText,
+  remove,
 };
 
 const renderer = createRenderer(options);
