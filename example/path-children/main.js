@@ -1,4 +1,5 @@
 import { createApp, h } from "../../lib/mini-vue.esm.js";
+import { ArrayToArray } from "./array2array.js";
 import { ArrayToText } from "./array2text.js";
 import { TextToArray } from "./text2array.js";
 import { TextToText } from "./text2text.js";
@@ -8,12 +9,13 @@ const App = {
     return h("div", {}, [
       h("p", {}, "主页"),
       // text -> text
-      h(TextToText),
+      // h(TextToText),
       // array -> text
-      h(ArrayToText),
+      // h(ArrayToText),
       // text -> array
-      h(TextToArray),
+      // h(TextToArray),
       // array -> array
+      h(ArrayToArray),
     ]);
   },
 };

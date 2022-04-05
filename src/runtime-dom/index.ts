@@ -21,8 +21,8 @@ function pathProp(el: HTMLElement, key, preValue, newValue) {
   }
 }
 
-function insert(el, parent) {
-  parent.append(el);
+function insert(child, parent: HTMLElement, anchor = null) {
+  parent.insertBefore(child, anchor);
 }
 
 function setElementText(el, text) {
