@@ -160,7 +160,10 @@ export function createRenderer(options) {
       const toBePatched = e2 - s2 + 1;
       let patched = 0;
 
+      let maxNewIndexSoFar = 0;
+      let moved = false;
       const newChildIndexMap = new Map();
+      const newIndex2OldIndexArray = new Array(toBePatched).fill(0);
 
       for (let i = s2; i <= e2; i++) {
         const nextChild = c2[i];
@@ -188,8 +191,38 @@ export function createRenderer(options) {
         if (newIndex === undefined) {
           hostRemove(prevChild.el);
         } else {
+          if (newIndex >= maxNewIndexSoFar) {
+            maxNewIndexSoFar = newIndex;
+          } else {
+            moved = true;
+          }
+          newIndex2OldIndexArray[newIndex - s2] = i + 1;
           path(prevChild, c2[newIndex], container, parentComponent, null);
           patched++;
+        }
+      }
+
+      /**
+       * newIndex2OldIndexArray 数组的下标记录着老VNODE的序列
+       * newIndex2OldIndexArray 值为0时,代表改元素是新增的,因为遍历旧元素时没有访问过
+       * anchor锚点选择从e2的位置,依次往前插入,是稳定的序列
+       * 最长增长子序列, 目的是塞选出不需要移动的元素是哪些? `在新数组里面的顺序`
+       */
+      const increaseNewSeq = moved ? getSequence(newIndex2OldIndexArray) : [];
+      let j = 0;
+      for (let i = toBePatched - 1; i >= 0; i--) {
+        const nextIndex = s2 + i;
+        const nextChild = c2[nextIndex];
+        const anchor = nextIndex + 1 < c2.length ? c2[nextIndex + 1].el : null;
+
+        if (newIndex2OldIndexArray[i] === 0) {
+          path(null, nextChild, container, parentComponent, anchor);
+        } else if (moved) {
+          if (increaseNewSeq[j] !== i) {
+            hostInsert(nextChild.el, container, anchor);
+          } else {
+            j++;
+          }
         }
       }
     }
@@ -297,4 +330,45 @@ export function createRenderer(options) {
   return {
     createApp: createAppAPI(render),
   };
+}
+
+function getSequence(arr: number[]): number[] {
+  const p = arr.slice();
+  const result = [0];
+  let i, j, u, v, c;
+  const len = arr.length;
+  for (i = 0; i < len; i++) {
+    const arrI = arr[i];
+    if (arrI !== 0) {
+      j = result[result.length - 1];
+      if (arr[j] < arrI) {
+        p[i] = j;
+        result.push(i);
+        continue;
+      }
+      u = 0;
+      v = result.length - 1;
+      while (u < v) {
+        c = (u + v) >> 1;
+        if (arr[result[c]] < arrI) {
+          u = c + 1;
+        } else {
+          v = c;
+        }
+      }
+      if (arrI < arr[result[u]]) {
+        if (u > 0) {
+          p[i] = result[u - 1];
+        }
+        result[u] = i;
+      }
+    }
+  }
+  u = result.length;
+  v = result[u - 1];
+  while (u-- > 0) {
+    result[u] = v;
+    v = p[v];
+  }
+  return result;
 }

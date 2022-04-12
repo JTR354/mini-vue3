@@ -131,17 +131,94 @@ nextChildren = [
   h("div", { key: "F" }, "F"),
 ];
 
+// 5.2 移动
+// ab(cde)fg
+// ab(ecd)fg
+// prevChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "C", id: "prev-c" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "F" }, "F"),
+//   h("div", { key: "G" }, "G"),
+// ];
+
+// nextChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "C", id: "prev-c" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "F" }, "F"),
+//   h("div", { key: "G" }, "G"),
+// ];
+
+// 5.2 移动
+// ab(cde)fg
+// ab(ecdH)fg
+
+// prevChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "C", id: "prev-c" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "F" }, "F"),
+//   h("div", { key: "G" }, "G"),
+// ];
+
+// nextChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "C", id: "prev-c" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "H" }, "H"),
+//   h("div", { key: "F" }, "F"),
+//   h("div", { key: "G" }, "G"),
+// ];
+
+// 6. 综合排序测试
+// a,b,(c,d,e,z),f,g
+// a,b,(d,c,y,e),f,g
+// 最长子序列： [1,3]
+
+// prevChildren = [
+//   h("p", { key: "A" }, "A"),
+//   h("p", { key: "B" }, "B"),
+//   h("p", { key: "C" }, "C"),
+//   h("p", { key: "D" }, "D"),
+//   h("p", { key: "E" }, "E"),
+//   h("p", { key: "Z" }, "Z"),
+//   h("p", { key: "F" }, "F"),
+//   h("p", { key: "G" }, "G"),
+// ];
+
+// nextChildren = [
+//   h("p", { key: "A" }, "A"),
+//   h("p", { key: "B" }, "B"),
+//   h("p", { key: "D" }, "D"),
+//   h("p", { key: "C" }, "C"),
+//   h("p", { key: "Y" }, "Y"),
+//   h("p", { key: "E" }, "E"),
+//   h("p", { key: "F" }, "F"),
+//   h("p", { key: "G" }, "G"),
+// ];
+
 export const ArrayToArray = {
   setup() {
     const isChange = ref(false);
-    window.isChange = isChange;
-    return { isChange };
+    // window.isChange = isChange;
+    const onClick = () => {
+      isChange.value = !isChange.value;
+    };
+    return { isChange, onClick };
   },
   render() {
-    return h(
-      "div",
-      { id: "children" },
-      !this.isChange ? prevChildren : nextChildren
-    );
+    return h("div", { id: "children" }, [
+      h("button", { onClick: this.onClick }, "toggle"),
+      h("div", {}, !this.isChange ? prevChildren : nextChildren),
+    ]);
   },
 };
