@@ -35,7 +35,7 @@
 - [x] 34-更新element的props
 - [x] 35-更新element的children
 - [x] 36-更新element的children双端对比diff算法①
-- [ ] 37-更新element的children双端对比diff算法②
+- [x] 37-更新element的children双端对比diff算法②
 - [ ] 38-更新element的children双端对比diff算法③
 - [ ] 39-学习犹大解决bug的处理方式
 - [ ] 40-实现组件更新功能

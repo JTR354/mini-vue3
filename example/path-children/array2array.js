@@ -86,7 +86,50 @@ prevChildren = [
 ];
 nextChildren = [h("div", { key: "B" }, "B"), h("div", { key: "C" }, "C")];
 
-// TODO 5. 对比中间部分
+// 5. 对比中间部分
+
+// 5.1-1 删除
+// ab(cd)ef
+// ab(gc)ef
+prevChildren = [
+  h("div", { key: "A" }, "A"),
+  h("div", { key: "B" }, "B"),
+  h("div", { key: "C", id: "prev-c" }, "C"),
+  h("div", { key: "D" }, "D"),
+  h("div", { key: "E" }, "E"),
+  h("div", { key: "F" }, "F"),
+];
+nextChildren = [
+  h("div", { key: "A" }, "A"),
+  h("div", { key: "B" }, "B"),
+  h("div", { key: "G" }, "G"),
+  h("div", { key: "C", id: "next-c" }, "C"),
+  h("div", { key: "E" }, "E"),
+  h("div", { key: "F" }, "F"),
+];
+
+// 5.1-2 删除优化
+// ab(cdg h)ef
+// ab(dc)ef
+
+prevChildren = [
+  h("div", { key: "A" }, "A"),
+  h("div", { key: "B" }, "B"),
+  h("div", { key: "C", id: "prev-c" }, "C"),
+  h("div", { key: "D" }, "D"),
+  h("div", { key: "G" }, "G"),
+  h("div", { key: "H" }, "H"),
+  h("div", { key: "E" }, "E"),
+  h("div", { key: "F" }, "F"),
+];
+nextChildren = [
+  h("div", { key: "A" }, "A"),
+  h("div", { key: "B" }, "B"),
+  h("div", { key: "D" }, "D"),
+  h("div", { key: "C", id: "next-c" }, "C"),
+  h("div", { key: "E" }, "E"),
+  h("div", { key: "F" }, "F"),
+];
 
 export const ArrayToArray = {
   setup() {

@@ -154,6 +154,44 @@ export function createRenderer(options) {
       }
     } else {
       // 中间不同
+      // 删除不存在的
+      let s1 = i;
+      let s2 = i;
+      const toBePatched = e2 - s2 + 1;
+      let patched = 0;
+
+      const newChildIndexMap = new Map();
+
+      for (let i = s2; i <= e2; i++) {
+        const nextChild = c2[i];
+        nextChild.key && newChildIndexMap.set(nextChild.key, i);
+      }
+
+      for (let i = s1; i <= e1; i++) {
+        const prevChild = c1[i];
+        if (patched >= toBePatched) {
+          hostRemove(prevChild.el);
+          continue;
+        }
+        let newIndex;
+        if (prevChild.key != null) {
+          newIndex = newChildIndexMap.get(prevChild.key);
+        } else {
+          for (let j = 0; j < e2; j++) {
+            const nextChild = c2[j];
+            if (isSameVNode(prevChild, nextChild)) {
+              break;
+            }
+          }
+        }
+
+        if (newIndex === undefined) {
+          hostRemove(prevChild.el);
+        } else {
+          path(prevChild, c2[newIndex], container, parentComponent, null);
+          patched++;
+        }
+      }
     }
 
     function isSameVNode(n1, n2) {
