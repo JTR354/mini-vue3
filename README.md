@@ -37,7 +37,7 @@
 - [x] 36-更新element的children双端对比diff算法①
 - [x] 37-更新element的children双端对比diff算法②
 - [x] 38-更新element的children双端对比diff算法③
-- [ ] 39-学习犹大解决bug的处理方式
+- [x] 39-学习犹大解决bug的处理方式
 - [ ] 40-实现组件更新功能
 - [ ] 41-实现nextTick功能
 - [ ] 42-编译模块概述

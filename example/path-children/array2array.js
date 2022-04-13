@@ -206,6 +206,24 @@ nextChildren = [
 //   h("p", { key: "G" }, "G"),
 // ];
 
+// fix bug
+prevChildren = [
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+  h("p", { key: "D" }, "D"),
+  h("p", { key: "DD" }, "DD"),
+  h("p", { id: "c-prev" }, "CC"),
+  h("p", { key: "E" }, "E"),
+];
+nextChildren = [
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+  h("p", { id: "c-next" }, "Cd"),
+  h("p", { key: "D" }, "D"),
+  h("p", { key: "D" }, "DD"),
+  h("p", { key: "E" }, "E"),
+];
+
 export const ArrayToArray = {
   setup() {
     const isChange = ref(false);

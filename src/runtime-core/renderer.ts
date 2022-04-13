@@ -180,9 +180,10 @@ export function createRenderer(options) {
         if (prevChild.key != null) {
           newIndex = newChildIndexMap.get(prevChild.key);
         } else {
-          for (let j = 0; j < e2; j++) {
+          for (let j = 0; j <= e2; j++) {
             const nextChild = c2[j];
             if (isSameVNode(prevChild, nextChild)) {
+              newIndex = j;
               break;
             }
           }
