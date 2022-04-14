@@ -5,6 +5,7 @@ import { ShapeFlags } from "./../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { shouldUpdateComponent } from "./componentUpdateUtils";
 import { createAppAPI } from "./creatApp";
+import { queueJob } from "./scheduler";
 import { Fragment, Text } from "./vnode";
 
 export function createRenderer(options) {
@@ -327,30 +328,38 @@ export function createRenderer(options) {
   }
 
   function setupRenderEffect(instance, initialVNode, container, anchor) {
-    instance.update = effect(() => {
-      // TODO modify???
-      if (!instance.isMounted) {
-        console.log("init");
-        const { proxy } = instance;
-        const subTree = (instance.subTree = instance.render.call(proxy));
-        path(null, subTree, container, instance, anchor);
-        // element -> mount
-        initialVNode.el = subTree.el;
-        instance.isMounted = true;
-      } else {
-        console.log("update");
-        const { next, vnode } = instance;
-        if (next) {
-          next.el = vnode.el;
-          componentPreRender(instance, next);
+    instance.update = effect(
+      () => {
+        // TODO modify???
+        if (!instance.isMounted) {
+          console.log("init");
+          const { proxy } = instance;
+          const subTree = (instance.subTree = instance.render.call(proxy));
+          path(null, subTree, container, instance, anchor);
+          // element -> mount
+          initialVNode.el = subTree.el;
+          instance.isMounted = true;
+        } else {
+          console.log("update");
+          const { next, vnode } = instance;
+          if (next) {
+            next.el = vnode.el;
+            componentPreRender(instance, next);
+          }
+          const { proxy } = instance;
+          const prevTree = instance.subTree;
+          const nextTree = (instance.subTree = instance.render.call(proxy));
+          // todo
+          path(prevTree, nextTree, container, instance, anchor);
         }
-        const { proxy } = instance;
-        const prevTree = instance.subTree;
-        const nextTree = (instance.subTree = instance.render.call(proxy));
-        // todo
-        path(prevTree, nextTree, container, instance, anchor);
+      },
+      {
+        scheduler() {
+          console.log("update-scheduler");
+          queueJob(instance.update);
+        },
       }
-    });
+    );
   }
 
   return {
