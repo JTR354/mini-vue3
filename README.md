@@ -42,5 +42,9 @@
 - [x] 41-实现nextTick功能
 - [x] 42-编译模块概述
 - [x] 43-实现解析插值功能
-- [ ] 44-实现解析element
+- [x] 44-实现解析element
 - [ ] 45-实现解析text
+
+### Link
+
+- [正则表达式工具](https://regexr.com/)
