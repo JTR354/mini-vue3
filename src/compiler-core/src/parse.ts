@@ -17,6 +17,8 @@ function parseChildren(context) {
     result.push(parseInterpolation(context));
   } else if (s.startsWith("<")) {
     result.push(parseElement(context));
+  } else {
+    result.push(parseText(context));
   }
   return result;
 }
@@ -25,10 +27,12 @@ function parseInterpolation(context) {
   const openDelimiter = "{{";
   const closeDelimiter = "}}";
   const source = context.source;
+  advanceBy(context, openDelimiter.length);
   const closeIndex = source.indexOf(closeDelimiter);
-  const rawContent = source.slice(openDelimiter.length, closeIndex);
-  advanceBy(context, closeIndex + closeDelimiter.length);
-  // console.log(context);
+  const rawContentLength = closeIndex - closeDelimiter.length;
+  const rawContent = parseTextData(context, rawContentLength);
+  advanceBy(context, closeIndex);
+  console.log(context, parseInterpolation.name);
   return {
     type: NodeTypes.INTERPOLATION,
     content: {
@@ -56,6 +60,7 @@ function createContext(content: string) {
 function parseElement(context: any): any {
   const element = parseTag(context, TagTypes.START);
   parseTag(context, TagTypes.END);
+  console.log(context, parseElement.name);
   return element;
 }
 function parseTag(context: any, type: TagTypes) {
@@ -70,4 +75,20 @@ function parseTag(context: any, type: TagTypes) {
       tag,
     },
   };
+}
+function parseText(context: any): any {
+  const content = parseTextData(context, context.source.length);
+  console.log(context, parseText.name);
+  return {
+    type: NodeTypes.TEXT,
+    content: {
+      content,
+    },
+  };
+}
+
+function parseTextData(context, length: number) {
+  const content = context.source.slice(0, length);
+  advanceBy(context, length);
+  return content;
 }

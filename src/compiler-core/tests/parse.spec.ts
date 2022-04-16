@@ -15,6 +15,7 @@ describe("Parse", () => {
       });
     });
   });
+
   describe("element", () => {
     test("simple element", () => {
       const ast: any = baseParse("<div></div>");
@@ -22,7 +23,18 @@ describe("Parse", () => {
         type: NodeTypes.ELEMENT,
         content: {
           tag: "div",
-          // content: "message",
+        },
+      });
+    });
+  });
+
+  describe("text", () => {
+    test("simple text", () => {
+      const ast: any = baseParse("some text");
+      expect(ast.children[0]).toStrictEqual({
+        type: NodeTypes.TEXT,
+        content: {
+          content: "some text",
         },
       });
     });
