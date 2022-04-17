@@ -7,20 +7,31 @@ enum TagTypes {
 
 export function baseParse(content: string) {
   const context = createContext(content);
-  return createRoot(parseChildren(context));
+  return createRoot(parseChildren(context, []));
 }
 
-function parseChildren(context) {
+function parseChildren(context, ancestor) {
   const result: any[] = [];
-  const s = context.source;
-  if (s.startsWith("{{")) {
-    result.push(parseInterpolation(context));
-  } else if (s.startsWith("<")) {
-    result.push(parseElement(context));
-  } else {
-    result.push(parseText(context));
+  while (!isEnd(context)) {
+    const s = context.source;
+    if (s.startsWith("{{")) {
+      result.push(parseInterpolation(context));
+    } else if (s.startsWith("<")) {
+      result.push(parseElement(context, ancestor));
+    } else {
+      result.push(parseText(context));
+    }
   }
+
   return result;
+}
+
+function isEnd(context) {
+  const s = context.source;
+  if (s.startsWith("</")) {
+    return true;
+  }
+  return !s;
 }
 
 function parseInterpolation(context) {
@@ -31,8 +42,9 @@ function parseInterpolation(context) {
   const closeIndex = source.indexOf(closeDelimiter);
   const rawContentLength = closeIndex - closeDelimiter.length;
   const rawContent = parseTextData(context, rawContentLength);
-  advanceBy(context, closeIndex);
-  console.log(context, parseInterpolation.name);
+  // console.log(context, parseInterpolation.name, 1);
+  advanceBy(context, closeDelimiter.length);
+  // console.log(context, parseInterpolation.name, 2);
   return {
     type: NodeTypes.INTERPOLATION,
     content: {
@@ -57,28 +69,43 @@ function createContext(content: string) {
     source: content,
   };
 }
-function parseElement(context: any): any {
-  const element = parseTag(context, TagTypes.START);
-  parseTag(context, TagTypes.END);
-  console.log(context, parseElement.name);
+function parseElement(context: any, ancestor): any {
+  const element: any = parseTag(context, TagTypes.START);
+  ancestor.push(element.content.tag);
+  element.content.children = parseChildren(context, ancestor);
+  const tag = parseTag(context, TagTypes.END);
+  if (ancestor.pop() !== tag) {
+    throw new Error(`缺少标签${"span"}`);
+  }
   return element;
 }
 function parseTag(context: any, type: TagTypes) {
   const match = context.source.match(/^<\/?([a-z]*)/i);
+  // console.log(match, "parseTag", context);
   const tag = match[1];
   advanceBy(context, match[0].length + 1);
-  // console.log(context);
-  if (type === TagTypes.END) return;
+  if (type === TagTypes.END) return tag;
   return {
     type: NodeTypes.ELEMENT,
     content: {
       tag,
+      children: [],
     },
   };
 }
 function parseText(context: any): any {
-  const content = parseTextData(context, context.source.length);
-  console.log(context, parseText.name);
+  const endToken = ["</", "{{"];
+  let endIndex = context.source.length;
+
+  for (const token of endToken) {
+    const index = context.source.indexOf(token);
+    if (index !== -1 && index < endIndex) {
+      endIndex = index;
+    }
+  }
+
+  const content = parseTextData(context, endIndex);
+  // console.log(context, "parse text");
   return {
     type: NodeTypes.TEXT,
     content: {
