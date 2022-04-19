@@ -71,8 +71,8 @@ function createContext(content: string) {
 }
 function parseElement(context: any, ancestor): any {
   const element: any = parseTag(context, TagTypes.START);
-  ancestor.push(element.content.tag);
-  element.content.children = parseChildren(context, ancestor);
+  ancestor.push(element.tag);
+  element.children = parseChildren(context, ancestor);
   const tag = parseTag(context, TagTypes.END);
   if (ancestor.pop() !== tag) {
     throw new Error(`缺少标签${"span"}`);
@@ -84,13 +84,12 @@ function parseTag(context: any, type: TagTypes) {
   // console.log(match, "parseTag", context);
   const tag = match[1];
   advanceBy(context, match[0].length + 1);
+  // console.log(context);
   if (type === TagTypes.END) return tag;
   return {
     type: NodeTypes.ELEMENT,
-    content: {
-      tag,
-      children: [],
-    },
+    tag,
+    children: [],
   };
 }
 function parseText(context: any): any {
@@ -108,9 +107,7 @@ function parseText(context: any): any {
   // console.log(context, "parse text");
   return {
     type: NodeTypes.TEXT,
-    content: {
-      content,
-    },
+    content,
   };
 }
 
