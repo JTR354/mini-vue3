@@ -47,11 +47,12 @@
 - [x] 46-实现解析三种联合类型
 - [x] 47-parse的实现原理&有限状态机
 - [x] 48-实现transform功能
-- [x] 49-实现代码生成
-- [x] 50-实现代码生成插值类型
-- [x] 51-实现代码生成三种联合类型
-- [x] 52-实现编译template成render函数
+- [x] 49-实现代码生成string类型
+- [ ] 50-实现代码生成插值类型
+- [ ] 51-实现代码生成三种联合类型
+- [ ] 52-实现编译template成render函数
 
 ### Link
 
 - [正则表达式工具](https://regexr.com/)
+- [vue-next-template-explorer](https://vue-next-template-explorer.netlify.app/#eyJzcmMiOiI8ZGl2PkhlbGxvIFdvcmxkPC9kaXY+Iiwib3B0aW9ucyI6e319)

@@ -11,7 +11,7 @@ export function baseParse(content: string) {
 }
 
 function parseChildren(context, ancestor) {
-  const result: any[] = [];
+  const result: any = [];
   while (!isEnd(context)) {
     const s = context.source;
     if (s.startsWith("{{")) {
