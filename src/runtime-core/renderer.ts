@@ -334,7 +334,10 @@ export function createRenderer(options) {
         if (!instance.isMounted) {
           console.log("init");
           const { proxy } = instance;
-          const subTree = (instance.subTree = instance.render.call(proxy));
+          const subTree = (instance.subTree = instance.render.call(
+            proxy,
+            proxy
+          ));
           path(null, subTree, container, instance, anchor);
           // element -> mount
           initialVNode.el = subTree.el;
@@ -348,7 +351,10 @@ export function createRenderer(options) {
           }
           const { proxy } = instance;
           const prevTree = instance.subTree;
-          const nextTree = (instance.subTree = instance.render.call(proxy));
+          const nextTree = (instance.subTree = instance.render.call(
+            proxy,
+            proxy
+          ));
           // todo
           path(prevTree, nextTree, container, instance, anchor);
         }

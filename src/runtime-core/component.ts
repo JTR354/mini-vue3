@@ -61,10 +61,25 @@ function handlerSetupResult(instance, setupResult) {
 }
 
 function finishComponentSetup(instance) {
+  // 给 instance 设置 render
+
+  // 先取到用户设置的 component options
   const Component = instance.type;
-  if (Component.render) {
+
+  if (!instance.render) {
+    // 如果 compile 有值 并且当然组件没有 render 函数，那么就需要把 template 编译成 render 函数
+    if (compile && !Component.render) {
+      if (Component.template) {
+        // 这里就是 runtime 模块和 compile 模块结合点
+        const template = Component.template;
+        Component.render = compile(template);
+      }
+    }
+
     instance.render = Component.render;
   }
+
+  // applyOptions()
 }
 
 let currentInstance = null;
@@ -79,4 +94,9 @@ export function getCurrentInstance() {
  */
 function setCurrentInstance(instance: any) {
   currentInstance = instance;
+}
+
+let compile;
+export function registerRuntimeCompiler(_compile) {
+  compile = _compile;
 }

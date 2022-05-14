@@ -32,10 +32,13 @@
 // };
 
 // export { createApp } from "./creatApp";
-export { h } from "./h";
+// export { h } from "./h";
+export * from "./h";
+// export * from "./createApp";
 export { renderSlots } from "./helpers/renderSlots";
-export { createTextVNode } from "./vnode";
-export { getCurrentInstance } from "./component";
+export { createTextVNode, createElementVNode } from "./vnode";
+export { getCurrentInstance, registerRuntimeCompiler } from "./component";
 export { inject, provide } from "./apiInject";
 export { createRenderer } from "./renderer";
 export { nextTick } from "./scheduler";
+export { toDisplayString } from "../shared";

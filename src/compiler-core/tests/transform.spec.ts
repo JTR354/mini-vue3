@@ -1,20 +1,64 @@
-import { describe, it, expect } from "vitest";
-import { NodeTypes } from "../src/ast";
+import { describe, test, expect } from "vitest";
 import { baseParse } from "../src/parse";
+import { TO_DISPLAY_STRING } from "../src/runtimeHelpers";
 import { transform } from "../src/transform";
+describe("Compiler: transform", () => {
+  test("context state", () => {
+    const ast = baseParse(`<div>hello {{ world }}</div>`);
+    console.log(ast);
 
-describe("transform", () => {
-  it("happy path", () => {
-    const ast = baseParse("<div>h1,{{message}}</div>");
-    const plugin = (node) => {
-      if (node.type === NodeTypes.TEXT) {
-        node.content = node.content + "mini-vue";
-      }
+    // manually store call arguments because context is mutable and shared
+    // across calls
+    const calls: any[] = [];
+    const plugin = (node, context) => {
+      calls.push([node, { ...context }]);
     };
+
     transform(ast, {
-      nodeTransform: [plugin],
+      nodeTransforms: [plugin],
     });
-    const textContent = ast.children[0].children[0].content;
-    expect(textContent).toBe("h1,mini-vue");
+
+    const div = ast.children[0];
+    expect(calls.length).toBe(4);
+    expect(calls[0]).toMatchObject([
+      ast,
+      {},
+      // TODO
+      //       {
+      //         parent: null,
+      //         currentNode: ast,
+      //       },
+    ]);
+    expect(calls[1]).toMatchObject([
+      div,
+      {},
+      // TODO
+      //   {
+      //     parent: ast,
+      //     currentNode: div,
+      //   },
+    ]);
+    expect(calls[2]).toMatchObject([
+      div.children[0],
+      {},
+      //       {
+      //         parent: div,
+      //         currentNode: div.children[0],
+      //       },
+    ]);
+    expect(calls[3]).toMatchObject([
+      div.children[1],
+      {},
+      //   {
+      //     parent: div,
+      //     currentNode: div.children[1],
+      //   },
+    ]);
+  });
+
+  test("should inject toString helper for interpolations", () => {
+    const ast = baseParse(`{{ foo }}`);
+    transform(ast, {});
+    expect(ast.helpers).toContain(TO_DISPLAY_STRING);
   });
 });

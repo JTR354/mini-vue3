@@ -1,3 +1,6 @@
+export * from "./toDisplayString";
+export * from "./ShapeFlags";
+
 export const extend = Object.assign;
 
 export const isObject = (value) => {
@@ -21,4 +24,6 @@ export const toHandlerKey = (event: string) => "on" + capitalize(event);
 
 export const isOn = (key) => /^on[A-Z]/.test(key);
 
-export const EMPTY_OBJ = {}
+export const EMPTY_OBJ = {};
+
+export const isString = (val) => typeof val === "string";
